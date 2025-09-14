@@ -23,6 +23,8 @@ namespace optional_settings {
             else {
                 defaultValue.into(m_impl->defaultValue);
             }
+            m_impl->value = m_impl->defaultValue;
+
             auto defaultEnabled = json.needs("default-enabled");
             if (defaultEnabled.isObject() && defaultEnabled.has(GEODE_PLATFORM_SHORT_IDENTIFIER_NOARCH)) {
                 defaultEnabled.needs(GEODE_PLATFORM_SHORT_IDENTIFIER_NOARCH).into(m_impl->defaultEnabled);
@@ -30,7 +32,6 @@ namespace optional_settings {
             else {
                 defaultEnabled.into(m_impl->defaultEnabled);
             }
-            m_impl->value = m_impl->defaultValue;
             m_impl->enabled = m_impl->defaultEnabled;
         }
 
