@@ -30,8 +30,8 @@ namespace optional_settings {
             else {
                 defaultEnabled.into(m_impl->defaultEnabled);
             }
+            m_impl->value = m_impl->defaultValue;
             m_impl->enabled = m_impl->defaultEnabled;
-            if (m_impl->defaultEnabled) m_impl->value = m_impl->defaultValue;
         }
 
         void parseBaseProperties(const std::string& key, const std::string& id, geode::JsonExpectedValue& json) {
