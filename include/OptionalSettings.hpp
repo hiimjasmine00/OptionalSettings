@@ -1,0 +1,9 @@
+#pragma once
+#include "OptionalBaseSettingNode.hpp"
+#include "OptionalBoolSetting.hpp"
+#include "OptionalColor3BSetting.hpp"
+#include "OptionalColor4BSetting.hpp"
+#include "OptionalFileSetting.hpp"
+#include "OptionalFloatSetting.hpp"
+#include "OptionalIntSetting.hpp"
+#include "OptionalStringSetting.hpp"

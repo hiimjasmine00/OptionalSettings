@@ -1,0 +1,33 @@
+{
+    "geode": "4.8.0",
+    "gd": {
+        "win": "2.2074",
+        "android": "2.2074",
+        "mac": "2.2074",
+        "ios": "2.2074"
+    },
+    "id": "hiimjasmine00.optional_settings",
+    "name": "Optional Settings",
+    "version": "v1.0.0",
+    "developer": "hiimjasmine00",
+    "description": "An API that provides optional setting types.",
+    "api": {
+        "include": [
+            "include/*.hpp"
+        ]
+    },
+    "links": {
+        "community": "https://discord.gg/QVKmbvBXA7",
+        "source": "https://github.com/hiimjasmine00/OptionalSettings",
+        "homepage": "https://www.hiimjasmine00.com"
+    },
+	"tags": [
+        "api",
+        "customization",
+        "developer",
+        "enhancement",
+        "interface",
+        "offline",
+        "utility"
+    ]
+}
