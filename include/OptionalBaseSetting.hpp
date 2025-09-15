@@ -96,10 +96,12 @@ namespace optional_settings {
 
         void setStoredValue(V value) {
             m_impl->value = value;
+            markChanged();
         }
 
         void setEnabled(bool enabled) {
             m_impl->enabled = enabled;
+            markChanged();
         }
 
         virtual geode::Result<> isValid(V value) const {
