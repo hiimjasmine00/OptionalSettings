@@ -89,17 +89,20 @@ namespace optional_settings {
         }
 
         void setValue(const std::optional<T>& value) {
+            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == *value)) return;
             m_impl->enabled = value.has_value();
             if (m_impl->enabled) m_impl->value = *value;
             markChanged();
         }
 
         void setStoredValue(V value) {
+            if (m_impl->value == value) return;
             m_impl->value = value;
             markChanged();
         }
 
         void setEnabled(bool enabled) {
+            if (m_impl->enabled == enabled) return;
             m_impl->enabled = enabled;
             markChanged();
         }

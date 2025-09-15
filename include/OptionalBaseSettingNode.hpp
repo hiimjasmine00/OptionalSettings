@@ -111,18 +111,21 @@ namespace optional_settings {
             return m_impl->enabled;
         }
 
-        void setValue(const std::optional<typename T::ValueAssignType>& value, cocos2d::CCNode* invoker) {
+        void setValue(const std::optional<typename T::ValueType>& value, cocos2d::CCNode* invoker) {
+            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == *value)) return;
             m_impl->enabled = value.has_value();
             if (m_impl->enabled) m_impl->value = *value;
             markChanged(invoker);
         }
 
         void setStoredValue(typename T::ValueAssignType value, cocos2d::CCNode* invoker) {
+            if (m_impl->value == value) return;
             m_impl->value = value;
             markChanged(invoker);
         }
 
         void setEnabled(bool enabled, cocos2d::CCNode* invoker) {
+            if (m_impl->enabled == enabled) return;
             m_impl->enabled = enabled;
             markChanged(invoker);
         }
