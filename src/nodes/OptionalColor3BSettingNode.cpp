@@ -6,7 +6,7 @@ using namespace optional_settings;
 
 OptionalColor3BSettingNode* OptionalColor3BSettingNode::create(std::shared_ptr<OptionalColor3BSetting> setting, float width) {
     auto ret = new OptionalColor3BSettingNode();
-    if (ret->init(setting, width)) {
+    if (ret->init(std::move(setting), width)) {
         ret->autorelease();
         return ret;
     }

@@ -1,19 +1,15 @@
 #include "OptionalFileSetting.hpp"
+#include "../Internal.hpp"
 #include "../nodes/OptionalFileSettingNode.hpp"
 #include <Geode/loader/Dirs.hpp>
-#include <Geode/loader/Mod.hpp>
+#include <matjson/std.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
 
 $on_mod(Loaded) {
-    auto mod = Mod::get();
-    if (auto res = mod->registerCustomSettingType("optional-file", &OptionalFileSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-file': {}", res.unwrapErr());
-    }
-    if (auto res = mod->registerCustomSettingType("optional-folder", &OptionalFileSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-folder': {}", res.unwrapErr());
-    }
+    Internal::registerCustomSettingType("optional-file", &OptionalFileSetting::parse);
+    Internal::registerCustomSettingType("optional-folder", &OptionalFileSetting::parse);
 }
 
 class OptionalFileSetting::Impl final {
@@ -79,7 +75,7 @@ Result<std::shared_ptr<SettingV3>> OptionalFileSetting::parse(const std::string&
     }
 
     root.checkUnknownKeys();
-    return root.ok(std::static_pointer_cast<SettingV3>(ret));
+    return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
 Result<> OptionalFileSetting::isValid(const std::filesystem::path& value) const {

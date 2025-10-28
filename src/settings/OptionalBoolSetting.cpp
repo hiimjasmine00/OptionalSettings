@@ -1,15 +1,12 @@
 #include "OptionalBoolSetting.hpp"
+#include "../Internal.hpp"
 #include "../nodes/OptionalBoolSettingNode.hpp"
-#include <Geode/loader/Mod.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
 
 $on_mod(Loaded) {
-    auto mod = Mod::get();
-    if (auto res = mod->registerCustomSettingType("optional-bool", &OptionalBoolSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-bool': {}", res.unwrapErr());
-    }
+    Internal::registerCustomSettingType("optional-bool", &OptionalBoolSetting::parse);
 }
 
 class OptionalBoolSetting::Impl final {
@@ -23,7 +20,7 @@ Result<std::shared_ptr<SettingV3>> OptionalBoolSetting::parse(const std::string&
     auto root = checkJson(json, "OptionalBoolSetting");
     ret->parseBaseProperties(key, id, root);
     root.checkUnknownKeys();
-    return root.ok(std::static_pointer_cast<SettingV3>(ret));
+    return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
 Result<> OptionalBoolSetting::isValid(bool value) const {

@@ -5,7 +5,7 @@ using namespace optional_settings;
 
 OptionalBoolSettingNode* OptionalBoolSettingNode::create(std::shared_ptr<OptionalBoolSetting> setting, float width) {
     auto ret = new OptionalBoolSettingNode();
-    if (ret->init(setting, width)) {
+    if (ret->init(std::move(setting), width)) {
         ret->autorelease();
         return ret;
     }
@@ -35,19 +35,19 @@ bool OptionalBoolSettingNode::init(std::shared_ptr<OptionalBoolSetting> setting,
     return true;
 }
 
-void OptionalBoolSettingNode::updateState(cocos2d::CCNode* invoker) {
+void OptionalBoolSettingNode::updateState(CCNode* invoker) {
     OptionalBaseSettingNode::updateState(invoker);
 
     auto enable = getSetting()->shouldEnable() && isEnabled();
     m_toggle->toggle(getStoredValue());
     m_toggle->setCascadeColorEnabled(true);
     m_toggle->setCascadeOpacityEnabled(true);
-    m_toggle->setColor(enable ? cocos2d::ccColor3B { 255, 255, 255 } : cocos2d::ccColor3B { 166, 166, 166 });
+    m_toggle->setColor(enable ? ccColor3B { 255, 255, 255 } : ccColor3B { 166, 166, 166 });
     m_toggle->setOpacity(enable ? 255 : 155);
     m_toggle->setEnabled(enable);
 }
 
-void OptionalBoolSettingNode::onToggle(cocos2d::CCObject*) {
+void OptionalBoolSettingNode::onToggle(CCObject*) {
     auto button = m_toggle->m_toggled ? m_toggle->m_onButton : m_toggle->m_offButton;
     button->stopActionByTag(0);
     button->setScale(button->m_baseScale);

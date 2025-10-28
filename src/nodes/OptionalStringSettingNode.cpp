@@ -5,7 +5,7 @@ using namespace optional_settings;
 
 OptionalStringSettingNode* OptionalStringSettingNode::create(std::shared_ptr<OptionalStringSetting> setting, float width) {
     auto ret = new OptionalStringSettingNode();
-    if (ret->init(setting, width)) {
+    if (ret->init(std::move(setting), width)) {
         ret->autorelease();
         return ret;
     }

@@ -1,15 +1,12 @@
 #include "OptionalColor4BSetting.hpp"
+#include "../Internal.hpp"
 #include "../nodes/OptionalColor4BSettingNode.hpp"
-#include <Geode/loader/Mod.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
 
 $on_mod(Loaded) {
-    auto mod = Mod::get();
-    if (auto res = mod->registerCustomSettingType("optional-rgba", &OptionalColor4BSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-rgba': {}", res.unwrapErr());
-    }
+    Internal::registerCustomSettingType("optional-rgba", &OptionalColor4BSetting::parse);
 }
 
 class OptionalColor4BSetting::Impl final {
@@ -23,7 +20,7 @@ Result<std::shared_ptr<SettingV3>> OptionalColor4BSetting::parse(const std::stri
     auto root = checkJson(json, "OptionalColor4BSetting");
     ret->parseBaseProperties(key, id, root);
     root.checkUnknownKeys();
-    return root.ok(std::static_pointer_cast<SettingV3>(ret));
+    return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
 Result<> OptionalColor4BSetting::isValid(ccColor4B value) const {

@@ -7,7 +7,7 @@ using namespace optional_settings;
 
 OptionalFileSettingNode* OptionalFileSettingNode::create(std::shared_ptr<OptionalFileSetting> setting, float width) {
     auto ret = new OptionalFileSettingNode();
-    if (ret->init(setting, width)) {
+    if (ret->init(std::move(setting), width)) {
         ret->autorelease();
         return ret;
     }

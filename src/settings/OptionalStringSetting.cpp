@@ -1,16 +1,14 @@
 #include "OptionalStringSetting.hpp"
+#include "../Internal.hpp"
 #include "../nodes/OptionalStringSettingNode.hpp"
-#include <Geode/loader/Mod.hpp>
+#include <matjson/std.hpp>
 #include <regex>
 
 using namespace geode::prelude;
 using namespace optional_settings;
 
 $on_mod(Loaded) {
-    auto mod = Mod::get();
-    if (auto res = mod->registerCustomSettingType("optional-string", &OptionalStringSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-string': {}", res.unwrapErr());
-    }
+    Internal::registerCustomSettingType("optional-string", &OptionalStringSetting::parse);
 }
 
 class OptionalStringSetting::Impl final {
@@ -36,7 +34,7 @@ Result<std::shared_ptr<SettingV3>> OptionalStringSetting::parse(const std::strin
     }
 
     root.checkUnknownKeys();
-    return root.ok(std::static_pointer_cast<SettingV3>(ret));
+    return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
 Result<> OptionalStringSetting::isValid(std::string_view value) const {
@@ -46,7 +44,7 @@ Result<> OptionalStringSetting::isValid(std::string_view value) const {
         }
     }
     else if (m_impl->oneOf) {
-        if (std::ranges::find(*m_impl->oneOf, std::string(value)) == std::ranges::end(*m_impl->oneOf)) {
+        if (!std::ranges::contains(*m_impl->oneOf, std::string(value))) {
             return Err("Value must be one of {}", fmt::join(*m_impl->oneOf, ", "));
         }
     }

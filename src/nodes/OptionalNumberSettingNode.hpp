@@ -176,7 +176,7 @@ protected:
 public:
     static OptionalNumberSettingNode* create(std::shared_ptr<T> setting, float width) {
         auto ret = new OptionalNumberSettingNode();
-        if (ret->init(setting, width)) {
+        if (ret->init(std::move(setting), width)) {
             ret->autorelease();
             return ret;
         }

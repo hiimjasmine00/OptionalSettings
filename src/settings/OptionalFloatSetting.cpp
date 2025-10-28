@@ -1,14 +1,12 @@
 #include "OptionalFloatSetting.hpp"
+#include "../Internal.hpp"
 #include "../nodes/OptionalNumberSettingNode.hpp"
 
 using namespace geode::prelude;
 using namespace optional_settings;
 
 $on_mod(Loaded) {
-    auto mod = Mod::get();
-    if (auto res = mod->registerCustomSettingType("optional-float", &OptionalFloatSetting::parse); res.isErr()) {
-        log::logImpl(Severity::Error, mod, "Failed to register custom setting type 'optional-float': {}", res.unwrapErr());
-    }
+    Internal::registerCustomSettingType("optional-float", &OptionalFloatSetting::parse);
 }
 
 class OptionalFloatSetting::Impl final {
@@ -61,7 +59,7 @@ Result<std::shared_ptr<SettingV3>> OptionalFloatSetting::parse(const std::string
     }
 
     root.checkUnknownKeys();
-    return root.ok(std::static_pointer_cast<SettingV3>(ret));
+    return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
 Result<> OptionalFloatSetting::isValid(double value) const {

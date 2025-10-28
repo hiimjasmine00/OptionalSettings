@@ -6,7 +6,7 @@ using namespace optional_settings;
 
 OptionalColor4BSettingNode* OptionalColor4BSettingNode::create(std::shared_ptr<OptionalColor4BSetting> setting, float width) {
     auto ret = new OptionalColor4BSettingNode();
-    if (ret->init(setting, width)) {
+    if (ret->init(std::move(setting), width)) {
         ret->autorelease();
         return ret;
     }
