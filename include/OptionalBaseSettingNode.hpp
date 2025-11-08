@@ -100,7 +100,7 @@ namespace optional_settings {
         }
     public:
         typename std::optional<typename T::ValueType> getValue() const {
-            return m_impl->enabled ? std::optional<typename T::ValueType>(m_impl->value) : std::nullopt;
+            return m_impl->enabled ? std::make_optional(m_impl->value) : std::nullopt;
         }
 
         typename T::ValueType getStoredValue() const {
@@ -112,9 +112,9 @@ namespace optional_settings {
         }
 
         void setValue(const std::optional<typename T::ValueType>& value, cocos2d::CCNode* invoker) {
-            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == *value)) return;
+            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == value.value())) return;
             m_impl->enabled = value.has_value();
-            if (m_impl->enabled) m_impl->value = *value;
+            if (m_impl->enabled) m_impl->value = value.value();
             markChanged(invoker);
         }
 

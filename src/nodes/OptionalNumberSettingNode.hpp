@@ -1,6 +1,5 @@
 #include <OptionalBaseSettingNode.hpp>
 #include <Geode/binding/Slider.hpp>
-#include <Geode/loader/Mod.hpp>
 #include <Geode/ui/TextInput.hpp>
 
 template <class T>
@@ -54,14 +53,14 @@ protected:
         m_bigArrowLeftBtnSpr->setScale(0.3f);
 
         m_bigArrowLeftBtn = CCMenuItemSpriteExtra::create(m_bigArrowLeftBtnSpr, this, menu_selector(OptionalNumberSettingNode::onArrow));
-        m_bigArrowLeftBtn->setUserObject("step-size"_spr, geode::ObjWrapper<typename T::ValueType>::create(-setting->getBigArrowStepSize()));
+        m_bigArrowLeftBtn->setUserObject("arrow-step-size", geode::ObjWrapper<typename T::ValueType>::create(-setting->getBigArrowStepSize()));
         m_bigArrowLeftBtn->setVisible(setting->isBigArrowsEnabled());
         buttonMenu->addChildAtPosition(m_bigArrowLeftBtn, geode::Anchor::Left, { 5.0f, 0.0f });
 
         m_arrowLeftBtnSpr = cocos2d::CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
         m_arrowLeftBtnSpr->setScale(0.5f);
         m_arrowLeftBtn = CCMenuItemSpriteExtra::create(m_arrowLeftBtnSpr, this, menu_selector(OptionalNumberSettingNode::onArrow));
-        m_arrowLeftBtn->setUserObject("step-size"_spr, geode::ObjWrapper<typename T::ValueType>::create(-setting->getArrowStepSize()));
+        m_arrowLeftBtn->setUserObject("arrow-step-size", geode::ObjWrapper<typename T::ValueType>::create(-setting->getArrowStepSize()));
         m_arrowLeftBtn->setVisible(setting->isArrowsEnabled());
         buttonMenu->addChildAtPosition(m_arrowLeftBtn, geode::Anchor::Left, { 22.0f, 0.0f });
 
@@ -83,7 +82,7 @@ protected:
         m_arrowRightBtnSpr->setFlipX(true);
         m_arrowRightBtnSpr->setScale(0.5f);
         m_arrowRightBtn = CCMenuItemSpriteExtra::create(m_arrowRightBtnSpr, this, menu_selector(OptionalNumberSettingNode::onArrow));
-        m_arrowRightBtn->setUserObject("step-size"_spr, geode::ObjWrapper<typename T::ValueType>::create(setting->getArrowStepSize()));
+        m_arrowRightBtn->setUserObject("arrow-step-size", geode::ObjWrapper<typename T::ValueType>::create(setting->getArrowStepSize()));
         m_arrowRightBtn->setVisible(setting->isArrowsEnabled());
         buttonMenu->addChildAtPosition(m_arrowRightBtn, geode::Anchor::Right, { -22.0f, 0.0f });
 
@@ -101,7 +100,7 @@ protected:
         m_bigArrowRightBtnSpr->setScale(0.3f);
 
         m_bigArrowRightBtn = CCMenuItemSpriteExtra::create(m_bigArrowRightBtnSpr, this, menu_selector(OptionalNumberSettingNode::onArrow));
-        m_bigArrowRightBtn->setUserObject("step-size"_spr, geode::ObjWrapper<typename T::ValueType>::create(setting->getBigArrowStepSize()));
+        m_bigArrowRightBtn->setUserObject("arrow-step-size", geode::ObjWrapper<typename T::ValueType>::create(setting->getBigArrowStepSize()));
         m_bigArrowRightBtn->setVisible(setting->isBigArrowsEnabled());
         buttonMenu->addChildAtPosition(m_bigArrowRightBtn, geode::Anchor::Right, { -5.0f, 0.0f });
 
@@ -134,7 +133,7 @@ protected:
         }
 
         auto min = setting->getMinValue();
-        auto enableLeft = enable && (!min || this->getStoredValue() > *min);
+        auto enableLeft = enable && (!min.has_value() || this->getStoredValue() > min.value());
         m_arrowLeftBtn->setEnabled(enableLeft);
         m_bigArrowLeftBtn->setEnabled(enableLeft);
         m_arrowLeftBtnSpr->setOpacity(enableLeft ? 255 : 155);
@@ -143,7 +142,7 @@ protected:
         m_bigArrowLeftBtnSpr->setColor(enableLeft ? cocos2d::ccColor3B { 255, 255, 255 } : cocos2d::ccColor3B { 166, 166, 166 });
 
         auto max = setting->getMaxValue();
-        auto enableRight = enable && (!max || this->getStoredValue() < *max);
+        auto enableRight = enable && (!max.has_value() || this->getStoredValue() < max.value());
         m_arrowRightBtn->setEnabled(enableRight);
         m_bigArrowRightBtn->setEnabled(enableRight);
         m_arrowRightBtnSpr->setOpacity(enableRight ? 255 : 155);
@@ -163,9 +162,9 @@ protected:
     void onArrow(cocos2d::CCObject* sender) {
         auto setting = this->getSetting();
         auto value = this->getStoredValue() + static_cast<geode::ObjWrapper<typename T::ValueType>*>(
-            static_cast<cocos2d::CCNode*>(sender)->getUserObject("step-size"_spr))->getValue();
-        if (auto min = setting->getMinValue()) value = std::max(*min, value);
-        if (auto max = setting->getMaxValue()) value = std::min(*max, value);
+            static_cast<cocos2d::CCNode*>(sender)->getUserObject("arrow-step-size"))->getValue();
+        if (auto min = setting->getMinValue()) value = std::max(min.value(), value);
+        if (auto max = setting->getMaxValue()) value = std::min(max.value(), value);
         this->setStoredValue(value, static_cast<cocos2d::CCNode*>(sender));
     }
 

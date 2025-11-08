@@ -46,7 +46,7 @@ Result<std::shared_ptr<SettingV3>> OptionalFloatSetting::parse(const std::string
     if (!root.has("control").has("arrows").get<bool>(true)) ret->m_impl->controls.arrowStepSize = 0.0;
     if (!root.has("control").has("big-arrows").get<bool>()) ret->m_impl->controls.bigArrowStepSize = 0.0;
 
-    if (!ret->m_impl->minValue || !ret->m_impl->maxValue) {
+    if (!ret->m_impl->minValue.has_value() || !ret->m_impl->maxValue.has_value()) {
         if (ret->m_impl->controls.sliderEnabled && root.has("control").has("slider")) {
             log::warn(
                 "Setting '{}' has \"controls.slider\" enabled but doesn't "
@@ -63,11 +63,17 @@ Result<std::shared_ptr<SettingV3>> OptionalFloatSetting::parse(const std::string
 }
 
 Result<> OptionalFloatSetting::isValid(double value) const {
-    if (m_impl->minValue && value < *m_impl->minValue) {
-        return Err("Value must be at least {}", *m_impl->minValue);
+    if (m_impl->minValue.has_value()) {
+        auto minValue = m_impl->minValue.value();
+        if (value < minValue) {
+            return Err("Value must be at least {}", minValue);
+        }
     }
-    if (m_impl->maxValue && value > *m_impl->maxValue) {
-        return Err("Value must be at most {}", *m_impl->maxValue);
+    if (m_impl->maxValue.has_value()) {
+        auto maxValue = m_impl->maxValue.value();
+        if (value > maxValue) {
+            return Err("Value must be at most {}", maxValue);
+        }
     }
     return Ok();
 }

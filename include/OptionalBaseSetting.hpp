@@ -48,7 +48,7 @@ namespace optional_settings {
 
         void setDefaultValue(const std::optional<T>& value) {
             m_impl->defaultEnabled = value.has_value();
-            if (m_impl->defaultEnabled) m_impl->defaultValue = *value;
+            if (m_impl->defaultEnabled) m_impl->defaultValue = value.value();
         }
 
         void setStoredDefaultValue(V value) {
@@ -65,7 +65,7 @@ namespace optional_settings {
         using ValueAssignType = V;
 
         std::optional<T> getDefaultValue() const {
-            return m_impl->defaultEnabled ? std::optional<T>(m_impl->defaultValue) : std::nullopt;
+            return m_impl->defaultEnabled ? std::make_optional(m_impl->defaultValue) : std::nullopt;
         }
 
         T getStoredDefaultValue() const {
@@ -77,7 +77,7 @@ namespace optional_settings {
         }
 
         std::optional<T> getValue() const {
-            return m_impl->enabled ? std::optional<T>(m_impl->value) : std::nullopt;
+            return m_impl->enabled ? std::make_optional(m_impl->value) : std::nullopt;
         }
 
         T getStoredValue() const {
@@ -89,9 +89,9 @@ namespace optional_settings {
         }
 
         void setValue(const std::optional<T>& value) {
-            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == *value)) return;
+            if (m_impl->enabled == value.has_value() && (!m_impl->enabled || m_impl->value == value.value())) return;
             m_impl->enabled = value.has_value();
-            if (m_impl->enabled) m_impl->value = *value;
+            if (m_impl->enabled) m_impl->value = value.value();
             markChanged();
         }
 

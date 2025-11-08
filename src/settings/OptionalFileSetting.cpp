@@ -70,7 +70,7 @@ Result<std::shared_ptr<SettingV3>> OptionalFileSetting::parse(const std::string&
                 item.has("files").into(filter.files);
                 filters.push_back(filter);
             }
-            if (!filters.empty()) ret->m_impl->filters.emplace(filters);
+            if (!filters.empty()) ret->m_impl->filters = std::move(filters);
         }
     }
 

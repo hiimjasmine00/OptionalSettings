@@ -29,7 +29,7 @@ Result<std::shared_ptr<SettingV3>> OptionalStringSetting::parse(const std::strin
     root.has("match").into(ret->m_impl->match);
     root.has("filter").into(ret->m_impl->filter);
     root.has("one-of").into(ret->m_impl->oneOf);
-    if (ret->m_impl->oneOf && ret->m_impl->oneOf->empty()) {
+    if (ret->m_impl->oneOf.has_value() && ret->m_impl->oneOf.value().empty()) {
         return Err("Setting '{}' in mod {} - \"one-of\" may not be empty!", key, id);
     }
 
@@ -38,14 +38,16 @@ Result<std::shared_ptr<SettingV3>> OptionalStringSetting::parse(const std::strin
 }
 
 Result<> OptionalStringSetting::isValid(std::string_view value) const {
-    if (m_impl->match) {
-        if (!std::regex_match(std::string(value), std::regex(*m_impl->match))) {
-            return Err("Value must match regex {}", *m_impl->match);
+    if (m_impl->match.has_value()) {
+        auto match = m_impl->match.value();
+        if (!std::regex_match(std::string(value), std::regex(match))) {
+            return Err("Value must match regex {}", match);
         }
     }
-    else if (m_impl->oneOf) {
-        if (!std::ranges::contains(*m_impl->oneOf, std::string(value))) {
-            return Err("Value must be one of {}", fmt::join(*m_impl->oneOf, ", "));
+    else if (m_impl->oneOf.has_value()) {
+        auto oneOf = m_impl->oneOf.value();
+        if (!std::ranges::contains(oneOf, std::string(value))) {
+            return Err("Value must be one of {}", fmt::join(oneOf, ", "));
         }
     }
     return Ok();

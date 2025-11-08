@@ -26,7 +26,7 @@ bool OptionalStringSettingNode::init(std::shared_ptr<OptionalStringSetting> sett
     });
     m_input->setScale(.7f);
     m_input->setString(setting->getStoredValue());
-    if (auto filter = setting->getAllowedCharacters()) m_input->setFilter(*filter);
+    if (auto filter = setting->getAllowedCharacters()) m_input->setFilter(filter.value());
 
     buttonMenu->addChildAtPosition(m_input, Anchor::Center);
 
@@ -63,7 +63,7 @@ void OptionalStringSettingNode::updateState(CCNode* invoker) {
 
     auto setting = getSetting();
     auto enable = setting->shouldEnable() && isEnabled();
-    if (!setting->getEnumOptions()) m_input->setEnabled(enable);
+    if (!setting->getEnumOptions().has_value()) m_input->setEnabled(enable);
     else {
         m_arrowRightSpr->setOpacity(enable ? 255 : 155);
         m_arrowRightSpr->setColor(enable ? ccColor3B { 255, 255, 255 } : ccColor3B { 166, 166, 166 });
@@ -75,10 +75,12 @@ void OptionalStringSettingNode::updateState(CCNode* invoker) {
 }
 
 void OptionalStringSettingNode::onArrow(CCObject* sender) {
-    auto options = *getSetting()->getEnumOptions();
-    auto it = std::ranges::find(options, getStoredValue());
-    auto index = it != options.end() ? it - options.begin() : 0;
-    if (sender->getTag() > 0) index = index < options.size() - 1 ? index + 1 : 0;
-    else index = index > 0 ? index - 1 : options.size() - 1;
-    setStoredValue(options[index], static_cast<CCNode*>(sender));
+    if (auto enumOptions = getSetting()->getEnumOptions()) {
+        auto options = enumOptions.value();
+        auto it = std::ranges::find(options, getStoredValue());
+        auto index = it != options.end() ? it - options.begin() : 0;
+        if (sender->getTag() > 0) index = index < options.size() - 1 ? index + 1 : 0;
+        else index = index > 0 ? index - 1 : options.size() - 1;
+        setStoredValue(options[index], static_cast<CCNode*>(sender));
+    }
 }
