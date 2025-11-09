@@ -100,7 +100,7 @@ namespace optional_settings {
         }
     public:
         typename std::optional<typename T::ValueType> getValue() const {
-            return m_impl->enabled ? std::make_optional(m_impl->value) : std::nullopt;
+            return m_impl->enabled ? std::optional<typename T::ValueType>(m_impl->value) : std::nullopt;
         }
 
         typename T::ValueType getStoredValue() const {

@@ -65,7 +65,7 @@ namespace optional_settings {
         using ValueAssignType = V;
 
         std::optional<T> getDefaultValue() const {
-            return m_impl->defaultEnabled ? std::make_optional(m_impl->defaultValue) : std::nullopt;
+            return m_impl->defaultEnabled ? std::optional<T>(m_impl->defaultValue) : std::nullopt;
         }
 
         T getStoredDefaultValue() const {
@@ -77,7 +77,7 @@ namespace optional_settings {
         }
 
         std::optional<T> getValue() const {
-            return m_impl->enabled ? std::make_optional(m_impl->value) : std::nullopt;
+            return m_impl->enabled ? std::optional<T>(m_impl->value) : std::nullopt;
         }
 
         T getStoredValue() const {
