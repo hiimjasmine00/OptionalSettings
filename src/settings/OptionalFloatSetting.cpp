@@ -24,11 +24,11 @@ public:
 
 OptionalFloatSetting::OptionalFloatSetting(PrivateMarker) : m_impl(std::make_shared<Impl>()) {}
 
-Result<std::shared_ptr<SettingV3>> OptionalFloatSetting::parse(const std::string& key, const std::string& id, const matjson::Value& json) {
+Result<std::shared_ptr<SettingV3>> OptionalFloatSetting::parse(std::string key, std::string id, const matjson::Value& json) {
     auto ret = std::make_shared<OptionalFloatSetting>(PrivateMarker());
 
     auto root = checkJson(json, "OptionalFloatSetting");
-    ret->parseBaseProperties(key, id, root);
+    ret->parseBaseProperties(key, std::move(id), root);
 
     root.has("min").into(ret->m_impl->minValue);
     root.has("max").into(ret->m_impl->maxValue);

@@ -5,7 +5,7 @@ class OptionalFileSettingNode : public optional_settings::OptionalBaseSettingNod
 protected:
     cocos2d::CCSprite* m_fileIcon;
     cocos2d::CCLabelBMFont* m_nameLabel;
-    geode::EventListener<geode::Task<geode::Result<std::filesystem::path>>> m_pickListener;
+    geode::async::TaskHolder<geode::Result<std::optional<std::filesystem::path>>> m_pickListener;
     CCMenuItemSpriteExtra* m_selectBtn;
     cocos2d::CCSprite* m_selectBtnSpr;
 

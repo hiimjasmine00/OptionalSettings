@@ -82,21 +82,22 @@ void OptionalFileSettingNode::updateState(CCNode* invoker) {
 }
 
 void OptionalFileSettingNode::onPickFile(CCObject*) {
-    m_pickListener.bind([this](Task<Result<std::filesystem::path>>::Event* event) {
-        if (auto value = event->getValue()) {
-            if (value->isOk()) setStoredValue(value->unwrap(), nullptr);
-            else if (value->isErr()) FLAlertLayer::create("Failed", fmt::format("Failed to pick file: {}", value->unwrapErr()), "OK")->show();
-        }
-    });
-
     auto setting = getSetting();
     auto value = getStoredValue();
     std::error_code ec;
-    m_pickListener.setFilter(file::pick(
+    m_pickListener.spawn(file::pick(
         setting->isFolder() ? file::PickMode::OpenFolder : (setting->useSaveDialog() ? file::PickMode::SaveFile : file::PickMode::OpenFile),
         {
             value.empty() || !std::filesystem::exists(value.parent_path(), ec) ? dirs::getGameDir() : value,
             setting->getFilters().value_or(std::vector<file::FilePickOptions::Filter>())
         }
-    ));
+    ), [this](Result<std::optional<std::filesystem::path>> value) {
+        if (value.isOk()) {
+            auto path = std::move(value).unwrap();
+            if (path.has_value()) setStoredValue(path.value(), nullptr);
+        }
+        else if (value.isErr()) {
+            FLAlertLayer::create("Failed", fmt::format("Failed to pick file: {}", value.unwrapErr()), "OK")->show();
+        }
+    });
 }

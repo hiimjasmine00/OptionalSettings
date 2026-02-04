@@ -10,7 +10,7 @@ namespace optional_settings {
         class PrivateMarker {};
     public:
         OptionalBoolSetting(PrivateMarker);
-        static geode::Result<std::shared_ptr<SettingV3>> parse(const std::string& key, const std::string& id, const matjson::Value& json);
+        static geode::Result<std::shared_ptr<SettingV3>> parse(std::string key, std::string id, const matjson::Value& json);
 
         geode::Result<> isValid(bool value) const override;
 

@@ -20,7 +20,7 @@ public:
 
 OptionalStringSetting::OptionalStringSetting(PrivateMarker) : m_impl(std::make_shared<Impl>()) {}
 
-Result<std::shared_ptr<SettingV3>> OptionalStringSetting::parse(const std::string& key, const std::string& id, const matjson::Value& json) {
+Result<std::shared_ptr<SettingV3>> OptionalStringSetting::parse(std::string key, std::string id, const matjson::Value& json) {
     auto ret = std::make_shared<OptionalStringSetting>(PrivateMarker());
 
     auto root = checkJson(json, "OptionalStringSetting");

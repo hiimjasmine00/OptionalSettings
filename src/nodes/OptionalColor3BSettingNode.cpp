@@ -42,10 +42,8 @@ void OptionalColor3BSettingNode::updateState(CCNode* invoker) {
 
 void OptionalColor3BSettingNode::onSelectColor(CCObject*) {
     auto popup = ColorPickPopup::create(getStoredValue());
-    popup->setDelegate(this);
+    popup->setCallback([this](const ccColor4B& color) {
+        setStoredValue({ color.r, color.g, color.b }, nullptr);
+    });
     popup->show();
-}
-
-void OptionalColor3BSettingNode::updateColor(const ccColor4B& color) {
-    setStoredValue({ color.r, color.g, color.b }, nullptr);
 }

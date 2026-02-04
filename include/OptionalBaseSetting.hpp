@@ -35,14 +35,14 @@ namespace optional_settings {
             m_impl->enabled = m_impl->defaultEnabled;
         }
 
-        void parseBaseProperties(const std::string& key, const std::string& id, geode::JsonExpectedValue& json) {
-            SettingV3::parseBaseProperties(key, id, json);
+        void parseBaseProperties(std::string key, std::string id, geode::JsonExpectedValue& json) {
+            SettingV3::parseBaseProperties(std::move(key), std::move(id), json);
             parseDefaultValue(json);
         }
 
-        geode::Result<> parseBaseProperties(const std::string& key, const std::string& id, const matjson::Value& json) {
+        geode::Result<> parseBaseProperties(std::string key, std::string id, const matjson::Value& json) {
             auto root = geode::checkJson(json, "OptionalBaseSetting");
-            parseBaseProperties(key, id, root);
+            parseBaseProperties(std::move(key), std::move(id), root);
             return root.ok();
         }
 

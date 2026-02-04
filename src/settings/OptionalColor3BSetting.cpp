@@ -16,10 +16,10 @@ public:
 
 OptionalColor3BSetting::OptionalColor3BSetting(PrivateMarker) : m_impl(std::make_shared<Impl>()) {}
 
-Result<std::shared_ptr<SettingV3>> OptionalColor3BSetting::parse(const std::string& key, const std::string& id, const matjson::Value& json) {
+Result<std::shared_ptr<SettingV3>> OptionalColor3BSetting::parse(std::string key, std::string id, const matjson::Value& json) {
     auto ret = std::make_shared<OptionalColor3BSetting>(PrivateMarker());
     auto root = checkJson(json, "OptionalColor3BSetting");
-    ret->parseBaseProperties(key, id, root);
+    ret->parseBaseProperties(std::move(key), std::move(id), root);
     root.checkUnknownKeys();
     return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
