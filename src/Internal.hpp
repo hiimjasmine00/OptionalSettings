@@ -2,4 +2,4 @@
 
 namespace Internal {
     void registerCustomSettingType(std::string_view type, geode::SettingGeneratorV3 generator);
-};
+}

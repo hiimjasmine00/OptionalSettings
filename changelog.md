@@ -1,5 +1,5 @@
 # Optional Settings Changelog
-## v2.0.0 (2026-02-04)
+## v2.0.0 (2026-02-05)
 - Ported to Geometry Dash v2.208 / Geode SDK v5.0.0
 
 ## v1.0.2 (2025-09-15)
