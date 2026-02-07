@@ -24,7 +24,7 @@ bool OptionalStringSettingNode::init(std::shared_ptr<OptionalStringSetting> sett
     m_input->setCallback([this](const std::string& str) {
         setStoredValue(str, m_input);
     });
-    m_input->setScale(.7f);
+    m_input->setScale(0.7f);
     m_input->setString(setting->getStoredValue());
     if (auto filter = setting->getAllowedCharacters()) m_input->setFilter(filter.value());
 

@@ -1,6 +1,7 @@
 #include "OptionalFileSettingNode.hpp"
 #include <Geode/binding/FLAlertLayer.hpp>
 #include <Geode/loader/Dirs.hpp>
+#include <Geode/ui/NineSlice.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
@@ -20,11 +21,11 @@ bool OptionalFileSettingNode::init(std::shared_ptr<OptionalFileSetting> setting,
 
     auto buttonMenu = getButtonMenu();
 
-    auto labelBG = extension::CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-    labelBG->setScale(.25f);
+    auto labelBG = NineSlice::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+    labelBG->setScale(0.25f);
     labelBG->setColor({ 0, 0, 0 });
     labelBG->setOpacity(90);
-    labelBG->setContentSize({ 420, 80 });
+    labelBG->setContentSize({ 420.0f, 80.0f });
     buttonMenu->addChildAtPosition(labelBG, Anchor::Center, { -10.0f, 0.0f });
 
     m_fileIcon = CCSprite::create();
@@ -34,7 +35,7 @@ bool OptionalFileSettingNode::init(std::shared_ptr<OptionalFileSetting> setting,
     buttonMenu->addChildAtPosition(m_nameLabel, Anchor::Left, { 13.0f, 0.0f }, { 0.0f, 0.5f });
 
     m_selectBtnSpr = CCSprite::createWithSpriteFrameName("GJ_plus2Btn_001.png");
-    m_selectBtnSpr->setScale(.7f);
+    m_selectBtnSpr->setScale(0.7f);
     m_selectBtn = CCMenuItemSpriteExtra::create(m_selectBtnSpr, this, menu_selector(OptionalFileSettingNode::onPickFile));
     buttonMenu->addChildAtPosition(m_selectBtn, Anchor::Right, { -5.0f, 0.0f });
 
