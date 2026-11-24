@@ -3,7 +3,7 @@
 #include "OptionalBaseSetting.hpp"
 
 namespace optional_settings {
-    class OPTIONAL_SETTINGS_DLL OptionalFileSetting final : public OptionalBaseSetting<std::filesystem::path, const std::filesystem::path&> {
+    class OPTIONAL_SETTINGS_DLL OptionalFileSetting final : public OptionalBaseSetting<asp::fs::Path, asp::fs::PathView> {
     private:
         class Impl;
         std::shared_ptr<Impl> m_impl;
@@ -12,7 +12,7 @@ namespace optional_settings {
         OptionalFileSetting(PrivateMarker);
         static geode::Result<std::shared_ptr<SettingV3>> parse(std::string key, std::string id, const matjson::Value& json);
 
-        geode::Result<> isValid(const std::filesystem::path& value) const override;
+        geode::Result<> isValid(asp::fs::PathView value) const override;
 
         bool isFolder() const;
         bool useSaveDialog() const;
@@ -25,7 +25,7 @@ namespace optional_settings {
 
 namespace geode {
     template <>
-    struct SettingTypeForValueType<std::optional<std::filesystem::path>> {
+    struct SettingTypeForValueType<std::optional<asp::fs::Path>> {
         using SettingType = optional_settings::OptionalFileSetting;
     };
 }

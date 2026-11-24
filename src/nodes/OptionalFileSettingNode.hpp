@@ -4,10 +4,9 @@
 class OptionalFileSettingNode : public optional_settings::OptionalBaseSettingNode<optional_settings::OptionalFileSetting> {
 protected:
     cocos2d::CCSprite* m_fileIcon;
-    cocos2d::CCLabelBMFont* m_nameLabel;
-    geode::async::TaskHolder<geode::Result<std::optional<std::filesystem::path>>> m_pickListener;
-    CCMenuItemSpriteExtra* m_selectBtn;
-    cocos2d::CCSprite* m_selectBtnSpr;
+    geode::Label* m_nameLabel;
+    geode::async::TaskHolder<geode::Result<std::optional<asp::fs::Path>>> m_pickListener;
+    geode::Button* m_selectBtn;
 
     bool init(std::shared_ptr<optional_settings::OptionalFileSetting> setting, float width);
     void updateState(cocos2d::CCNode* invoker) override;

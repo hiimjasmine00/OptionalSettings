@@ -28,10 +28,10 @@ Result<std::shared_ptr<SettingV3>> OptionalFileSetting::parse(std::string key, s
     ret->parseBaseProperties(key, id, root);
 
     if (ret->hasDefaultValue()) {
-        ret->setStoredDefaultValue(ret->getStoredDefaultValue().make_preferred());
+        ret->setStoredDefaultValue(ret->getStoredDefaultValue().makePreferred());
         try {
             ret->setStoredDefaultValue(fmt::format(
-                fmt::runtime(string::pathToString(ret->getStoredDefaultValue())),
+                fmt::runtime(ret->getStoredDefaultValue().view().view()),
                 fmt::arg("gd_dir", dirs::getGameDir()),
                 fmt::arg("gd_save_dir", dirs::getSaveDir()),
                 fmt::arg("mod_config_dir", dirs::getModConfigDir() / id),
@@ -78,14 +78,13 @@ Result<std::shared_ptr<SettingV3>> OptionalFileSetting::parse(std::string key, s
     return root.ok(std::static_pointer_cast<SettingV3>(std::move(ret)));
 }
 
-Result<> OptionalFileSetting::isValid(const std::filesystem::path& value) const {
+Result<> OptionalFileSetting::isValid(asp::fs::PathView value) const {
     if (value == getStoredDefaultValue()) return Ok();
-    std::error_code code;
     if (m_impl->folder) {
-        if (!std::filesystem::is_directory(value, code)) return Err("Value must be a folder");
+        if (!value.isDir()) return Err("Value must be a folder");
     }
     else {
-        if (!std::filesystem::is_regular_file(value, code)) return Err("Value must be a file");
+        if (!value.isFile()) return Err("Value must be a file");
     }
     return Ok();
 }

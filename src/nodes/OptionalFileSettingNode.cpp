@@ -31,12 +31,13 @@ bool OptionalFileSettingNode::init(std::shared_ptr<OptionalFileSetting> setting,
     m_fileIcon = CCSprite::create();
     buttonMenu->addChildAtPosition(m_fileIcon, Anchor::Left, { 5.0f, 0.0f });
 
-    m_nameLabel = CCLabelBMFont::create("", "bigFont.fnt");
+    m_nameLabel = Label::create("", "bigFont.fnt");
     buttonMenu->addChildAtPosition(m_nameLabel, Anchor::Left, { 13.0f, 0.0f }, { 0.0f, 0.5f });
 
-    m_selectBtnSpr = CCSprite::createWithSpriteFrameName("GJ_plus2Btn_001.png");
-    m_selectBtnSpr->setScale(0.7f);
-    m_selectBtn = CCMenuItemSpriteExtra::create(m_selectBtnSpr, this, menu_selector(OptionalFileSettingNode::onPickFile));
+    m_selectBtn = Button::createWithSpriteFrameName("GJ_plus2Btn_001.png", [this](Button* sender) {
+        onPickFile(sender);
+    });
+    m_selectBtn->setScale(0.7f);
     buttonMenu->addChildAtPosition(m_selectBtn, Anchor::Right, { -5.0f, 0.0f });
 
     updateState(nullptr);
@@ -50,10 +51,7 @@ void OptionalFileSettingNode::updateState(CCNode* invoker) {
     auto folder = setting->isFolder();
     auto isTextualDefaultValue = false;
     if (!hasNonDefaultValue()) {
-        if (string::pathToString(def).size() <= 20) {
-            std::error_code ec;
-            isTextualDefaultValue = folder ? !std::filesystem::is_directory(def, ec) : !std::filesystem::is_regular_file(def, ec);
-        }
+        if (def.size() <= 20) isTextualDefaultValue = folder ? !def.isDir() : !def.isFile();
     }
 
     OptionalBaseSettingNode::updateState(invoker);
@@ -64,21 +62,23 @@ void OptionalFileSettingNode::updateState(CCNode* invoker) {
 
     auto value = getStoredValue();
     if (value.empty() || isTextualDefaultValue) {
-        if (isTextualDefaultValue) m_nameLabel->setString(string::pathToString(def).c_str());
-        else m_nameLabel->setString(folder ? "No Folder Selected" : "No File Selected");
+        if (isTextualDefaultValue) m_nameLabel->setText(def.string());
+        else if (folder) m_nameLabel->setText("No Folder Selected");
+        else m_nameLabel->setText("No File Selected");
         m_nameLabel->setColor({ 166, 166, 166 });
         m_nameLabel->setOpacity(155);
     }
     else {
-        m_nameLabel->setString(string::pathToString(value.filename()).c_str());
+        auto filename = value.filename();
+        m_nameLabel->setText(filename.has_value() ? filename->string() : "");
         m_nameLabel->setColor({ 255, 255, 255 });
         m_nameLabel->setOpacity(255);
     }
-    m_nameLabel->limitLabelWidth(75.0f, 0.35f, 0.1f);
+    m_nameLabel->setLimitLabelWidth(75.0f, 0.35f, 0.1f);
 
     auto enable = setting->shouldEnable() && isEnabled();
-    m_selectBtnSpr->setOpacity(enable ? 255 : 155);
-    m_selectBtnSpr->setColor(enable ? ccColor3B { 255, 255, 255 } : ccColor3B { 166, 166, 166 });
+    m_selectBtn->setOpacity(enable ? 255 : 155);
+    m_selectBtn->setColor(enable ? ccColor3B { 255, 255, 255 } : ccColor3B { 166, 166, 166 });
     m_selectBtn->setEnabled(enable);
 }
 
@@ -89,10 +89,10 @@ void OptionalFileSettingNode::onPickFile(CCObject*) {
     m_pickListener.spawn(file::pick(
         setting->isFolder() ? file::PickMode::OpenFolder : (setting->useSaveDialog() ? file::PickMode::SaveFile : file::PickMode::OpenFile),
         {
-            value.empty() || !std::filesystem::exists(value.parent_path(), ec) ? dirs::getGameDir() : value,
+            value.empty() || !value.parent().value_or("").exists() ? dirs::getGameDir() : value,
             setting->getFilters().value_or(std::vector<file::FilePickOptions::Filter>())
         }
-    ), [this](Result<std::optional<std::filesystem::path>> value) {
+    ), [this](Result<std::optional<asp::fs::Path>> value) {
         if (value.isOk()) {
             auto path = std::move(value).unwrap();
             if (path.has_value()) setStoredValue(path.value(), nullptr);

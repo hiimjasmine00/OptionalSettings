@@ -1,4 +1,5 @@
 #include <Geode/loader/SettingV3.hpp>
+#include <Geode/ui/Toggler.hpp>
 
 namespace optional_settings {
     template <class T>
@@ -8,7 +9,7 @@ namespace optional_settings {
         private:
             typename T::ValueType value;
             bool enabled;
-            CCMenuItemToggler* mainToggle = nullptr;
+            geode::Toggler* mainToggle = nullptr;
             friend class OptionalBaseSettingNode;
         };
         std::shared_ptr<Impl> m_impl;
@@ -20,15 +21,11 @@ namespace optional_settings {
             m_impl->value = setting->getStoredValue();
             m_impl->enabled = setting->isEnabled();
 
-            m_impl->mainToggle = CCMenuItemToggler::createWithStandardSprites(
-                this, menu_selector(OptionalBaseSettingNode::onMainToggle), 0.55f
-            );
-            m_impl->mainToggle->m_onButton->setContentSize({ 25.0f, 25.0f });
-            m_impl->mainToggle->m_onButton->getNormalImage()->setPosition({ 12.5f, 12.5f });
-            m_impl->mainToggle->m_offButton->setContentSize({ 25.0f, 25.0f });
-            m_impl->mainToggle->m_offButton->getNormalImage()->setPosition({ 12.5f, 12.5f });
-            m_impl->mainToggle->m_notClickable = true;
-            m_impl->mainToggle->toggle(setting->isEnabled());
+            m_impl->mainToggle = geode::Toggler::createWithStandardSprites([this](geode::Toggler* sender, bool toggled) {
+                setEnabled(toggled, sender);
+            });
+            m_impl->mainToggle->setScale(0.55f);
+            m_impl->mainToggle->setToggled(setting->isEnabled());
             getButtonMenu()->addChildAtPosition(m_impl->mainToggle, geode::Anchor::Left, { -15.0f, 0.0f });
 
             auto nameMenu = getNameMenu();
@@ -38,17 +35,10 @@ namespace optional_settings {
             return true;
         }
 
-        void onMainToggle(cocos2d::CCObject*) {
-            auto button = m_impl->mainToggle->m_toggled ? m_impl->mainToggle->m_onButton : m_impl->mainToggle->m_offButton;
-            button->stopActionByTag(0);
-            button->setScale(button->m_baseScale);
-            setEnabled(!m_impl->mainToggle->m_toggled, m_impl->mainToggle);
-        }
-
-        CCMenuItemToggler* getMainToggle() const {
+        geode::Toggler* getMainToggle() const {
             return m_impl->mainToggle;
         }
-
+    public:
         void updateState(cocos2d::CCNode* invoker) override {
             SettingNodeV3::updateState(invoker);
 
@@ -74,7 +64,7 @@ namespace optional_settings {
                 }
             }
         }
-
+    protected:
         void onCommit() override {
             auto setting = getSetting();
             setting->setStoredValue(m_impl->value);

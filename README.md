@@ -6,7 +6,7 @@ To use this mod, include it as a dependency in your `mod.json` file:
 ```json
 {
     "dependencies": {
-        "hiimjasmine00.optional_settings": ">=v1.0.0"
+        "hiimjasmine00.optional_settings": ">=v3.0.0"
     }
 }
 ```

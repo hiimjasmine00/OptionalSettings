@@ -20,9 +20,10 @@ bool OptionalColor4BSettingNode::init(std::shared_ptr<OptionalColor4BSetting> se
     auto buttonMenu = getButtonMenu();
     buttonMenu->setContentWidth(20.0f);
 
-    m_colorSprite = ColorChannelSprite::create();
-    m_colorSprite->setScale(0.65f);
-    m_colorBtn = CCMenuItemSpriteExtra::create(m_colorSprite, this, menu_selector(OptionalColor4BSettingNode::onSelectColor));
+    m_colorBtn = Button::createWithNode(ColorChannelSprite::create(), [this](Button* sender) {
+        onSelectColor(sender);
+    });
+    m_colorBtn->setScale(0.65f);
     buttonMenu->addChildAtPosition(m_colorBtn, Anchor::Right, { -10.0f, 0.0f });
 
     updateState(nullptr);
@@ -34,11 +35,11 @@ void OptionalColor4BSettingNode::updateState(CCNode* invoker) {
     OptionalBaseSettingNode::updateState(invoker);
 
     auto value = getStoredValue();
-    m_colorSprite->setColor({ value.r, value.g, value.b });
-    m_colorSprite->updateOpacity(value.a / 255.0f);
+    m_colorBtn->setColor({ value.r, value.g, value.b });
+    static_cast<ColorChannelSprite*>(m_colorBtn->getDisplayNode())->updateOpacity(value.a / 255.0f);
 
     auto enable = getSetting()->shouldEnable() && isEnabled();
-    m_colorSprite->setOpacity(enable ? 255 : 155);
+    m_colorBtn->setOpacity(enable ? 255 : 155);
     m_colorBtn->setEnabled(enable);
 }
 

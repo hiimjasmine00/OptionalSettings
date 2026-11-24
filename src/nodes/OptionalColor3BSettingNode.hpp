@@ -4,8 +4,7 @@
 
 class OptionalColor3BSettingNode : public optional_settings::OptionalBaseSettingNode<optional_settings::OptionalColor3BSetting> {
 protected:
-    CCMenuItemSpriteExtra* m_colorBtn;
-    ColorChannelSprite* m_colorSprite;
+    geode::Button* m_colorBtn;
 
     bool init(std::shared_ptr<optional_settings::OptionalColor3BSetting> setting, float width);
     void updateState(cocos2d::CCNode* invoker) override;

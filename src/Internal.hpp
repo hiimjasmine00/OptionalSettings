@@ -1,3 +1,4 @@
+#include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/SettingV3.hpp>
 
 namespace Internal {
