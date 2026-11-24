@@ -25,7 +25,7 @@ namespace optional_settings {
                 setEnabled(toggled, sender);
             });
             m_impl->mainToggle->setScale(0.55f);
-            m_impl->mainToggle->setToggled(setting->isEnabled());
+            m_impl->mainToggle->setToggled(m_impl->enabled);
             getButtonMenu()->addChildAtPosition(m_impl->mainToggle, geode::Anchor::Left, { -15.0f, 0.0f });
 
             auto nameMenu = getNameMenu();
@@ -48,7 +48,7 @@ namespace optional_settings {
 
             auto setting = getSetting();
             auto enable = setting->shouldEnable();
-            m_impl->mainToggle->toggle(m_impl->enabled);
+            m_impl->mainToggle->setToggled(m_impl->enabled);
             m_impl->mainToggle->setCascadeColorEnabled(true);
             m_impl->mainToggle->setCascadeOpacityEnabled(true);
             m_impl->mainToggle->setColor(enable ? cocos2d::ccColor3B { 255, 255, 255 } : cocos2d::ccColor3B { 166, 166, 166 });

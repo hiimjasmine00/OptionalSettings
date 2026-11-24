@@ -36,7 +36,7 @@ void OptionalBoolSettingNode::updateState(CCNode* invoker) {
     OptionalBaseSettingNode::updateState(invoker);
 
     auto enable = getSetting()->shouldEnable() && isEnabled();
-    m_toggle->toggle(getStoredValue());
+    m_toggle->setToggled(getStoredValue());
     m_toggle->setCascadeColorEnabled(true);
     m_toggle->setCascadeOpacityEnabled(true);
     m_toggle->setColor(enable ? ccColor3B { 255, 255, 255 } : ccColor3B { 166, 166, 166 });

@@ -1,4 +1,7 @@
 # Optional Settings Changelog
+## v3.0.1 (2026-11-24)
+- Fixed broken checkboxes
+
 ## v3.0.0 (2026-11-24)
 - Ported to Geometry Dash v2.209 / Geode SDK v6.0.0
 

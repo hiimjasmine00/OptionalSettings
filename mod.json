@@ -8,7 +8,7 @@
     },
     "id": "hiimjasmine00.optional_settings",
     "name": "Optional Settings",
-    "version": "v3.0.0",
+    "version": "v3.0.1",
     "developer": "hiimjasmine00",
     "description": "An API that provides optional setting types.",
     "early-load": true,
